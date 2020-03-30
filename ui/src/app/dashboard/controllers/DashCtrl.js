@@ -57,11 +57,19 @@
   if (keyEvent.which === 13)
     $scope.addLink();
   }
+
+    var startDownload = function(urlObj) {
+      socket.on('connect', function(){
+        socket.emit('startDownload', urlObj);
+      });
+    }
+
     var getActiveDownloads = function() {
       DashService.getDownloads().then(function (response) {
         var data = response.data;
         $scope.downloads = _.filter(data, function(d) {return d.status==0});
         $scope.downloads = _.map($scope.downloads, function(element) {
+             startDownload(obj)
              return _.extend({}, element, {progress: 0});
         });
       }, function(error){

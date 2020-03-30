@@ -6,6 +6,7 @@ from flask_socketio import SocketIO, join_room
 from Auth import *
 from Models import *
 from DownloadManager import *
+from DownloadDaemon import Handler
 import json, urllib.request, urllib.error, urllib.parse, os, _thread
 from multiprocessing import Process
 from DownloadDaemon import starter
@@ -32,6 +33,12 @@ def token_validator(token):
         token = generate_auth_token(user, server.config['SECRET_KEY'])
         return token
     return None
+
+
+# socket connections
+@socketio.on('startDownload', namespace='/progress')
+def startDownload(data):
+    Handler(socketio).start_download(data)
 
 
 @server.route('/ui/<string:path>')
